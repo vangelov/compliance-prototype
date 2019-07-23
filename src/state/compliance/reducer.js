@@ -1,4 +1,5 @@
 import * as actions from "./actions";
+import { distanceInDaysFromNow } from '../__shared__/dateUtil';
 
 const initialState = {
   status: 'pending'
@@ -22,6 +23,15 @@ export default (state = initialState, action) => {
       let approvedCount = 0;
 
       for (const document of documents) {
+        if (document.level === 'optioanl' || document.level === 'n/a') {
+          continue;
+        }
+      
+        const documentType = documentTypeForId[document.documentTypeId];
+        if (distanceInDaysFromNow(documentType.effectiveFrom) !== 0) {
+          continue;
+        }
+
         if (state.status === 'approved' && document.status === 'expiring_soon') {
           return {
             status: 'expiring_soon'
