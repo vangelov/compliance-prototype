@@ -23,7 +23,7 @@ export default (state = initialState, action) => {
       let approvedCount = 0;
 
       for (const document of documents) {
-        if (document.level === 'optioanl' || document.level === 'n/a') {
+        if (document.level === 'optional' || document.level === 'n/a') {
           continue;
         }
       

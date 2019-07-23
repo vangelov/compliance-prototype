@@ -26,7 +26,7 @@ const currencies = [
     }
 ];
 
-export class AdminCreateDocumentTypeDialog extends React.Component {
+export class AdminCreateOrEditDocumentTypeDialog extends React.Component {
 
     constructor(props) {
         super(props);
@@ -160,4 +160,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
     null,
     mapDispatchToProps
-)(AdminCreateDocumentTypeDialog);
+)(AdminCreateOrEditDocumentTypeDialog);

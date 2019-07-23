@@ -9,6 +9,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import IconButton from "@material-ui/core/IconButton";
+import EditIcon from '@material-ui/icons/Edit';
 
 import TableToolbar from '../../__shared__/TableToolbar';
 import AdminCreateSpecialtyDialog from './CreateSpecialtyDialog';
@@ -30,30 +32,41 @@ class AdminSpecialties extends React.Component {
     super();
     
     this.state = {
-      newSpecialtyDialogOpened: false
+      specialtyCreateOrEditDialogOpened: false,
+      specialtyForEditing: null
     };
   }
 
   handleNewSpecialtyDialogClose = () => {
-    this.setState({ newSpecialtyDialogOpened: false });
+    this.setState({ 
+      specialtyCreateOrEditDialogOpened: false, 
+      specialtyForEditing: null 
+    });
   }
 
   handleNewSpecialtyDialogOpen = () => {
-    this.setState({ newSpecialtyDialogOpened: true });
+    this.setState({ specialtyCreateOrEditDialogOpened: true });
   }
+
+  handleEditSpecialty = (specialty) => {
+    this.setState({ 
+      specialtyCreateOrEditDialogOpened: true, 
+      specialtyForEditing: specialty 
+    });
+  }
+  
   
   render() {
     const { classes, specialties } = this.props;
-    const { newSpecialtyDialogOpened } = this.state;
+    const { specialtyCreateOrEditDialogOpened, specialtyForEditing } = this.state;
 
     return (
       <Paper className={classes.root}>
 
-       <AdminCreateSpecialtyDialog 
-          open={newSpecialtyDialogOpened} 
+       {specialtyCreateOrEditDialogOpened && <AdminCreateSpecialtyDialog 
+          specialty={specialtyForEditing}
           onClose={this.handleNewSpecialtyDialogClose} 
-          onCreate={this.handleNewSpecialtyDialogClose}
-        />
+        />}
 
         <TableToolbar title="SPECIALTIES" onCreate={this.handleNewSpecialtyDialogOpen} />
 
@@ -62,6 +75,7 @@ class AdminSpecialties extends React.Component {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell align="right">Number of documents</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -71,6 +85,12 @@ class AdminSpecialties extends React.Component {
                   {specialty.name}
                 </TableCell>
                 <TableCell align="right">{specialty.documentTypeIds.length}</TableCell>
+
+                <TableCell align="right">
+                  <IconButton onClick={() => this.handleEditSpecialty(specialty)} edge="end">
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

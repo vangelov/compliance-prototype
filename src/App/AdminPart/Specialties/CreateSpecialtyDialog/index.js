@@ -30,9 +30,19 @@ export class AdminCreateSpecialtyDialog extends React.Component {
     constructor(props) {
         super(props);
 
+        const { specialty } = this.props;
+        let selectedDocumentTypeIds = {};
+
+        if (specialty) {
+          for (const documentTypeId of specialty.documentTypeIds) {
+            selectedDocumentTypeIds[documentTypeId] = true;
+          }
+        }
+
         this.state = {
-            name: "",
-            selectedDocumentTypeIds: {}
+          opened: true,
+          name: specialty ? specialty.name : "",
+          selectedDocumentTypeIds
         };
     }
 
@@ -44,20 +54,32 @@ export class AdminCreateSpecialtyDialog extends React.Component {
 
     create = () => {
       const { name, selectedDocumentTypeIds } = this.state;
-        const ids = Object
-          .keys(selectedDocumentTypeIds)
-          .filter(id => selectedDocumentTypeIds[id] === true)
-          .map(id => Number(id));
-        
-        const specialty = {
+      const { specialty } = this.props;
+
+      const ids = Object
+        .keys(selectedDocumentTypeIds)
+        .filter(id => selectedDocumentTypeIds[id] === true)
+        .map(id => Number(id));
+      
+
+      if (specialty) {
+        const editedSpecialty = {
+          id: specialty.id,
           name,
           documentTypeIds: ids
         };
 
-      
-      this.clearState(() => {
-        this.props.onCreate(specialty);
-      });
+        this.props.onEdit(editedSpecialty);
+      } else {
+        const newSpecialty = {
+          name,
+          documentTypeIds: ids
+        };
+
+        this.props.onCreate(newSpecialty);
+      }
+
+      this.setState({ opened: false });
     };
 
     handleDocumentTypeToggle = (documentType) => {
@@ -72,33 +94,31 @@ export class AdminCreateSpecialtyDialog extends React.Component {
       })
     }
 
-    handleClose = () => {
-      this.clearState(() => this.props.onClose());
+    cancel = () => {
+      this.setState({ opened: false });
     }
 
-    clearState = (callback) => {
-      this.setState({
-        selectedDocumentTypeIds: {},
-        name: ''
-      }, callback);
+    close = () => {
+      this.props.onClose();
     }
 
     render() {
         const {
-            open,
-            classes,
-            documentTypes
+          classes,
+          documentTypes,
+          specialty
         } = this.props;
 
         const {
-            name,
-            selectedDocumentTypeIds
+          opened,
+          name,
+          selectedDocumentTypeIds
         } = this.state;
 
         return (
-            <Dialog open={open} onClose={this.handleClose}>
+            <Dialog open={opened} onExited={this.close}>
               <DialogTitle>
-                Add Specialty 
+                {specialty ? 'Edit Specialty' : 'Add Specialty'}
               </DialogTitle>
 
               <DialogContent>
@@ -135,7 +155,7 @@ export class AdminCreateSpecialtyDialog extends React.Component {
               </DialogContent>
 
               <DialogActions>
-                <Button onClick={this.handleClose} color="secondary">
+                <Button onClick={this.cancel} color="secondary">
                   Cancel
                 </Button>
 
@@ -143,7 +163,7 @@ export class AdminCreateSpecialtyDialog extends React.Component {
                   onClick={this.create}
                   color="primary"
                 >
-                  Create
+                  {specialty ? 'Edit' : 'Create'}
                 </Button>
               </DialogActions>
             </Dialog>
@@ -157,13 +177,15 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-        onCreate: newSpecialty => {
-            dispatch(actions.specialtiesAdd(newSpecialty));
-            ownProps.onCreate();
-        },
-    };
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onCreate: newSpecialty => {
+      dispatch(actions.specialtiesAdd(newSpecialty));
+    },
+    onEdit: editedSpecialty => {
+      dispatch(actions.specialtiesEdit(editedSpecialty));
+    },
+  };
 };
 
 export default compose(

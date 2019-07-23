@@ -13,7 +13,7 @@ import IconButton from "@material-ui/core/IconButton";
 import EditIcon from '@material-ui/icons/Edit';
 
 import TableToolbar from '../../__shared__/TableToolbar';
-import AdminCreateDocumentTypeDialog from './CreateDocumentTypeDialog';
+import AdminCreateOrEditDocumentTypeDialog from './CreateOrEditDocumentTypeDialog';
 
 const styles = theme => ({
   root: {
@@ -61,7 +61,7 @@ class AdminDocumentTypes extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        {documentTypeCreateOrEditDialogOpened && <AdminCreateDocumentTypeDialog 
+        {documentTypeCreateOrEditDialogOpened && <AdminCreateOrEditDocumentTypeDialog 
           documentType={documentTypeForEditing}
           onClose={this.handleNewDocumentTypeDialogClose} 
         />}
