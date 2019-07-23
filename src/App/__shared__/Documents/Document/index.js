@@ -9,12 +9,9 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Chip from '@material-ui/core/Chip';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from "@material-ui/core/TextField";
 
 import DocumentFiles from './Files';
+import Stamp from './Stamp';
 import * as actions from '../../../../state/actions';
 
 const styles = theme => ({
@@ -47,24 +44,15 @@ class Document extends React.Component {
     this.setState({ expanded: !expanded });
   }
 
-  handleStatusChange = (event) => {
-    const { document, onStatusChange } = this.props;
-    onStatusChange(document, event.target.value);
-  }
-
-  handleExpiresAtChange = (event) => {
-    const { document, onExpiresAtChange } = this.props;
-    onExpiresAtChange(document, event.target.value);
-  }
-
   render() {
     const { expanded } = this.state;
-    const { classes, document, documentType, isForAdmin } = this.props;
-    const statusColor = {
-      approved: 'primary',
-      declined: 'secondary',
-      pending: 'default'
-    };
+    const { classes, document, documentType, isForAdmin, specialties } = this.props;
+    
+    const specialtiesMap = {};
+
+    for (const specialty of specialties) {
+      specialtiesMap[specialty.id] = specialty;
+    }
 
     return (
       <ExpansionPanel expanded={expanded} onChange={this.handleExpandChange}>
@@ -79,54 +67,34 @@ class Document extends React.Component {
             label={documentType.level.toUpperCase()}
             className={classes.chip}
           />
-
-          <div style={{ flex: 1 }} />
-
-          <Chip
-            size="small"
-            label={document.status.toUpperCase()}
-            className={classes.chip}
-            color={statusColor[document.status]}
-          />
         </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <div style={{width: '100%'}}>
               <DocumentFiles document={document} />
 
-              {isForAdmin && 
-                <React.Fragment>
-                  <TextField
-                    style={{marginTop:"20px"}}
-                    required
-                    onChange={this.handleExpiresAtChange}
-                    value={document.expiresAt}
-                    margin="dense"
-                    label="Expires At"
-                    type="date"
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />      
+              {isForAdmin && document.stamps.map((stamp) => {
+                const specialty = specialtiesMap[stamp.specialtyId];
 
-                  <InputLabel  style={{marginTop:"20px"}}>Document status</InputLabel>
-                  <Select 
-                    disabled={!document.expiresAt}
-                    fullWidth
-                    value={document.status}
-                    onChange={this.handleStatusChange}
-                  >
-                    <MenuItem value={'approved'}>Approved</MenuItem>
-                    <MenuItem value={'declined'}>Declined</MenuItem>
-                  </Select> 
-                </React.Fragment> 
-              }
+                return (
+                  <Stamp 
+                    document={document} 
+                    stamp={stamp} 
+                    specialty={specialty} 
+                  />
+                );
+              })}
             </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+      specialties: state.specialties
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -141,7 +109,7 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   ),
   withStyles(styles)

@@ -34,14 +34,14 @@ class App extends React.Component {
   componentDidMount() {
     setInterval(() => {
       const { 
-        nurse, 
+        specialties, 
         documentTypes, 
         documents,
         onDocumentsTimePass,
         onComplianceUpdate
       } = this.props;
 
-      onDocumentsTimePass(nurse, documentTypes);
+      onDocumentsTimePass(specialties, documentTypes);
       onComplianceUpdate(documents, documentTypes);
     }, 1000);
   }
@@ -76,7 +76,8 @@ const mapStateToProps = state => {
   return {
     documentTypes: state.documentTypes,
     documents: state.documents,
-    nurse: state.nurse
+    nurse: state.nurse,
+    specialties: state.specialties
   };
 };
 

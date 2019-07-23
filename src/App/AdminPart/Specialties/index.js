@@ -78,6 +78,7 @@ class AdminSpecialties extends React.Component {
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
+          
           <TableBody>
             {specialties.map(specialty => (
               <TableRow key={specialty.name}>

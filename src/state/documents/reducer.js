@@ -36,20 +36,38 @@ function documentReducer(document, action) {
     }
 
     case actions.DOCUMENTS_UPDATE_STATUS: {
-      const { status } = action;
+      const { status, stampSpecialtyId } = action;
 
       return {
         ...document,
-        status
+        stamps: document.stamps.map((stamp) => {
+          if (stamp.specialtyId === stampSpecialtyId) {
+            return {
+              ...stamp,
+              status
+            };
+          }
+
+          return stamp;
+        })
       };
     }
 
     case actions.DOCUMENTS_UPDATE_EXPIRY: {
-      const { expiresAt } = action;
+      const { expiresAt, stampSpecialtyId } = action;
 
       return {
         ...document,
-        expiresAt
+        stamps: document.stamps.map((stamp) => {
+          if (stamp.specialtyId === stampSpecialtyId) {
+            return {
+              ...stamp,
+              expiresAt
+            };
+          }
+
+          return stamp;
+        })
       };
     }
 
@@ -75,13 +93,13 @@ export default (state = initialState, action) => {
       });
 
     case actions.DOCUMENTS_TIME_PASS: {
-      const { nurse, documentTypes } = action;
+      const { specialties, documentTypes } = action;
       const documentTypeForId = {};
 
       for (const documentType of documentTypes) {
         documentTypeForId[documentType.id] = documentType;
       }
-      const updatedDocuments = documentsUtil.update(nurse, documentTypes, state);
+      const updatedDocuments = documentsUtil.update(specialties, state);
 
       return updatedDocuments
         .map((document) => {

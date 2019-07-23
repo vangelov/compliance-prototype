@@ -61,7 +61,6 @@ export class AdminCreateSpecialtyDialog extends React.Component {
         .filter(id => selectedDocumentTypeIds[id] === true)
         .map(id => Number(id));
       
-
       if (specialty) {
         const editedSpecialty = {
           id: specialty.id,

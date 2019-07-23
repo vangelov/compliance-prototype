@@ -15,22 +15,24 @@ export const documentsDeleteFile = (documentId, file) => ({
 });
 
 export const DOCUMENTS_UPDATE_STATUS = 'DOCUMENTS_UPDATE_STATUS';
-export const documentsUpdateStatus = (documentId, status) => ({
+export const documentsUpdateStatus = (documentId, stampSpecialtyId, status) => ({
   type: DOCUMENTS_UPDATE_STATUS,
   documentId,
+  stampSpecialtyId,
   status
 });
 
 export const DOCUMENTS_UPDATE_EXPIRY = 'DOCUMENTS_UPDATE_EXPIRY';
-export const documentsUpdateExpiry = (documentId, expiresAt) => ({
+export const documentsUpdateExpiry = (documentId, stampSpecialtyId, expiresAt) => ({
   type: DOCUMENTS_UPDATE_EXPIRY,
   documentId,
+  stampSpecialtyId,
   expiresAt
 });
 
 export const DOCUMENTS_TIME_PASS = 'DOCUMENTS_TIME_PASS';
-export const documentsTimePass = (nurse, documentTypes) => ({ 
+export const documentsTimePass = (specialties, documentTypes) => ({ 
   type: DOCUMENTS_TIME_PASS, 
-  nurse,
+  specialties,
   documentTypes 
 });
