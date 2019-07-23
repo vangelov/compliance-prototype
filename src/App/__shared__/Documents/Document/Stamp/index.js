@@ -24,7 +24,7 @@ class Stamp extends React.Component {
   }
 
   render() {
-    const { stamp, specialty } = this.props;
+    const { stamp, specialty, canEdit } = this.props;
     
     const statusColor = {
       approved: 'primary',
@@ -44,30 +44,33 @@ class Stamp extends React.Component {
           />
         </div>
 
-        <TextField
-          style={{marginTop:"20px"}}
-          required
-          onChange={this.handleExpiresAtChange}
-          value={stamp.expiresAt}
-          margin="dense"
-          label="Expires At"
-          type="date"
-          fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />      
+        {canEdit && 
+            <React.Fragment>
+            <TextField
+              style={{marginTop:"20px"}}
+              required
+              onChange={this.handleExpiresAtChange}
+              value={stamp.expiresAt}
+              margin="dense"
+              label="Expires At"
+              type="date"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />      
 
-        <InputLabel  style={{marginTop:"20px"}}>Status</InputLabel>
-        <Select 
-          disabled={!stamp.expiresAt}
-          fullWidth
-          value={stamp.status}
-          onChange={this.handleStatusChange}
-        >
-          <MenuItem value={'approved'}>Approved</MenuItem>
-          <MenuItem value={'declined'}>Declined</MenuItem>
-        </Select> 
+            <InputLabel  style={{marginTop:"20px"}}>Status</InputLabel>
+            <Select 
+              disabled={!stamp.expiresAt}
+              fullWidth
+              value={stamp.status}
+              onChange={this.handleStatusChange}
+            >
+              <MenuItem value={'approved'}>Approved</MenuItem>
+              <MenuItem value={'declined'}>Declined</MenuItem>
+            </Select> 
+          </React.Fragment>}
       </div> 
     );
   }

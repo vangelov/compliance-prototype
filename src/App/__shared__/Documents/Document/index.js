@@ -72,11 +72,12 @@ class Document extends React.Component {
             <div style={{width: '100%'}}>
               <DocumentFiles document={document} />
 
-              {isForAdmin && document.stamps.map((stamp) => {
+              {document.stamps.map((stamp) => {
                 const specialty = specialtiesMap[stamp.specialtyId];
 
                 return (
                   <Stamp 
+                    canEdit={isForAdmin}
                     document={document} 
                     stamp={stamp} 
                     specialty={specialty} 

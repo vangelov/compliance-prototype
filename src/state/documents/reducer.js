@@ -15,9 +15,12 @@ function documentReducer(document, action) {
       return {
         ...document,
         files: [...document.files, file],
-        status: document.status === 'not_uploaded' ? 
-          'pending' : 
-          document.status
+        stamps: document.stamps.map((stamp) => ({
+          ...stamp,
+          status: stamp.status === 'not_uploaded' ?
+            'pending' : 
+            stamp.status
+        }))
       }
     }
 
@@ -31,7 +34,10 @@ function documentReducer(document, action) {
       return {
         ...document,
         files,
-        status: files.length === 0 ? 'pending' : document.status
+        stamps: document.stamps.map((stamp) => ({
+          ...stamp,
+          status: files.length === 0 ? 'pending' : stamp.status
+        }))
       };
     }
 
