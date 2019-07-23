@@ -27,13 +27,27 @@ class Documents extends React.Component {
         <AppBar position="static" color="default" style={{ marginTop: "20px", marginBottom: "20px"}}>
         <Toolbar>
           <Typography variant="h6" color="inherit">
-            COMPLIANCE
+            General Band 5, A&E
           </Typography>
 
           <Chip
             style={{marginRight: "0px", marginLeft: "auto"}}
-            label={compliance.status.toUpperCase()}
-            color={statusColor[compliance.status]}
+            label="APPROVED"
+            color={statusColor['approved']}
+          />
+        </Toolbar>
+      </AppBar>
+
+      <AppBar position="static" color="default" style={{ marginTop: "20px", marginBottom: "20px"}}>
+        <Toolbar>
+          <Typography variant="h6" color="inherit">
+            RMN
+          </Typography>
+
+          <Chip
+            style={{marginRight: "0px", marginLeft: "auto"}}
+            label="DECLINED"
+            color={statusColor['declined']}
           />
         </Toolbar>
       </AppBar>

@@ -30,20 +30,21 @@ const styles = theme => ({
 class DocumentFiles extends React.Component {
 
   handleAddFile = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
+    this.input = document.createElement('input');
+    this.input.type = 'file';
 
-    input.onchange = (e) => { 
+    this.input.onchange = (event) => { 
       const { document, onAddFile } = this.props;
       const file = { 
-        name: e.target.files[0].name, 
+        name: event.target.files[0].name, 
         dateAdded: new Date().toLocaleString() 
       };
 
       onAddFile(document, file);
+      this.input = null;
     }
 
-    input.click();   
+    this.input.click();   
   }
 
   handleDelete = (file) => {

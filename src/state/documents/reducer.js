@@ -105,6 +105,7 @@ export default (state = initialState, action) => {
       for (const documentType of documentTypes) {
         documentTypeForId[documentType.id] = documentType;
       }
+
       const updatedDocuments = documentsUtil.update(specialties, state);
 
       return updatedDocuments

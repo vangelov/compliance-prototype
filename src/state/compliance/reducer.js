@@ -1,9 +1,9 @@
 import * as actions from "./actions";
 import { distanceInDaysFromNow } from '../__shared__/dateUtil';
 
-const initialState = {
-  status: 'pending'
-}
+const initialState = [
+  { specialtyId: 0, status: 'pending' }
+];
 
 export default (state = initialState, action) => {
   switch (action.type) {

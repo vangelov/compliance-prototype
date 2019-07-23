@@ -77,6 +77,7 @@ class Document extends React.Component {
 
                 return (
                   <Stamp 
+                    key={stamp.specialtyId}
                     canEdit={isForAdmin}
                     document={document} 
                     stamp={stamp} 

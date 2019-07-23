@@ -43,6 +43,7 @@ class App extends React.Component {
 
       onDocumentsTimePass(specialties, documentTypes);
       onComplianceUpdate(documents, documentTypes);
+
     }, 1000);
   }
 
@@ -89,6 +90,10 @@ const mapDispatchToProps = (dispatch) => {
     onComplianceUpdate: (documents, documentTypes) => {
       dispatch(actions.complianceUpdate(documents, documentTypes));
     },
+
+    test: () => {
+      dispatch(actions.documentsAddFile(0, { name: 'test file' }));
+    }
   };
 };
 
