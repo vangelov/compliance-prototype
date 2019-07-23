@@ -27,14 +27,17 @@ const currencies = [
 ];
 
 export class AdminCreateDocumentTypeDialog extends React.Component {
+
     constructor(props) {
         super(props);
 
+        const { documentType } = props;
 
         this.state = {
-            name: "",
-            level: "",
-            effectiveFrom: "2017-05-24T10:30"
+            opened: true,
+            name: documentType ? documentType.name : "",
+            level: documentType ? documentType.level : "",
+            effectiveFrom: documentType ? documentType.effectiveFrom : ""
         };
     }
 
@@ -44,42 +47,44 @@ export class AdminCreateDocumentTypeDialog extends React.Component {
         });
     };
 
-    create = () => {
-      const { name, level, effectiveFrom } = this.state;
-      const documentType = { name, level, effectiveFrom };
 
-      this.clearState(() => {
-        this.props.onCreate(documentType);
-      });
+    createOrEdit = () => {
+      const { documentType } = this.props;
+      const { name, level, effectiveFrom } = this.state;
+
+      if (documentType) {
+        const editedDocumentType = { id: documentType.id, name, level, effectiveFrom };
+        this.props.onEdit(editedDocumentType);
+      } else {
+        const newDocumentType = { name, level, effectiveFrom };
+        this.props.onCreate(newDocumentType);
+      }
+
+      this.setState({ opened: false });
     };
 
-    close = () => {
-      this.clearState(() => {
-        this.props.onClose();
-      });
+    cancel = () => {
+      this.setState({ opened: false });
     }
 
-    clearState = (callback) => {
-      this.setState({
-        name: "",
-        level: "",
-        effectiveFrom: "2017-05-24T10:30"
-      }, callback);
+    close = () => {
+      this.props.onClose();
     }
 
     render() {
-        const { open } = this.props;
-
         const {
             name,
             level,
             effectiveFrom,
+            opened
         } = this.state;
 
+        const { documentType } = this.props;
+
         return (
-            <Dialog open={open} onClose={this.close}>
+            <Dialog open={opened} onExited={this.close}>
               <DialogTitle>
-                Add Document type
+                {documentType ? 'Edit Document Type' : 'Add Document type'}
               </DialogTitle>
 
               <DialogContent>
@@ -125,15 +130,15 @@ export class AdminCreateDocumentTypeDialog extends React.Component {
               </DialogContent>
 
               <DialogActions>
-                <Button onClick={this.close} color="secondary">
+                <Button onClick={this.cancel} color="secondary">
                   Cancel
                 </Button>
 
                 <Button
-                  onClick={this.create}
+                  onClick={this.createOrEdit}
                   color="primary"
                 >
-                  Create
+                  {documentType ? 'Edit' : 'Create'}
                 </Button>
               </DialogActions>
             </Dialog>
@@ -141,11 +146,13 @@ export class AdminCreateDocumentTypeDialog extends React.Component {
     }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
     return {
       onCreate: newDocumentType => {
         dispatch(actions.documentTypesAdd(newDocumentType));
-        ownProps.onCreate();
+      },
+      onEdit: editedDocumentType => {
+        dispatch(actions.documentTypesEdit(editedDocumentType));
       },
     };
 };

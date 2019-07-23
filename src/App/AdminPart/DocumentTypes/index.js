@@ -9,6 +9,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import IconButton from "@material-ui/core/IconButton";
+import EditIcon from '@material-ui/icons/Edit';
 
 import TableToolbar from '../../__shared__/TableToolbar';
 import AdminCreateDocumentTypeDialog from './CreateDocumentTypeDialog';
@@ -30,31 +32,41 @@ class AdminDocumentTypes extends React.Component {
     super();
     
     this.state = {
-      newDocumentDialogOpened: false
+      documentTypeCreateOrEditDialogOpened: false,
+      documentTypeForEditing: null
     };
   }
 
-  handleNewDocumentDialogClose = () => {
-    this.setState({ newDocumentDialogOpened: false });
+  handleNewDocumentTypeDialogClose = () => {
+    this.setState({ 
+      documentTypeCreateOrEditDialogOpened: false,
+      documentTypeForEditing: null
+    });
   }
 
-  handleNewDocumentDialogOpen = () => {
-    this.setState({ newDocumentDialogOpened: true });
+  handleNewDocumentTypeDialogOpen = () => {
+    this.setState({ documentTypeCreateOrEditDialogOpened: true });
+  }
+
+  handleEditDocumentType = (document) => {
+    this.setState({ 
+      documentTypeCreateOrEditDialogOpened: true, 
+      documentTypeForEditing: document 
+    });
   }
   
   render() {
     const { classes, documentTypes } = this.props;
-    const { newDocumentDialogOpened } = this.state;
+    const { documentTypeCreateOrEditDialogOpened, documentTypeForEditing } = this.state;
 
     return (
       <Paper className={classes.root}>
-        <AdminCreateDocumentTypeDialog 
-          open={newDocumentDialogOpened} 
-          onClose={this.handleNewDocumentDialogClose} 
-          onCreate={this.handleNewDocumentDialogClose}
-        />
+        {documentTypeCreateOrEditDialogOpened && <AdminCreateDocumentTypeDialog 
+          documentType={documentTypeForEditing}
+          onClose={this.handleNewDocumentTypeDialogClose} 
+        />}
 
-        <TableToolbar title="DOCUMENT TYPES" onCreate={this.handleNewDocumentDialogOpen} />
+        <TableToolbar title="DOCUMENT TYPES" onCreate={this.handleNewDocumentTypeDialogOpen} />
 
         <Table className={classes.table}>
           <TableHead>
@@ -62,16 +74,24 @@ class AdminDocumentTypes extends React.Component {
               <TableCell>Name</TableCell>
               <TableCell align="right">Type</TableCell>
               <TableCell align="right">Effective from</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {documentTypes.map(row => (
-              <TableRow key={row.name}>
+            {documentTypes.map((documentType) => (
+              <TableRow key={documentType.name}>
                 <TableCell component="th" scope="row">
-                  {row.name}
+                  {documentType.name}
                 </TableCell>
-                <TableCell align="right">{row.level}</TableCell>
-                <TableCell align="right">{row.effectiveFrom}</TableCell>
+                <TableCell align="right">{documentType.level}</TableCell>
+                <TableCell align="right">{documentType.effectiveFrom}</TableCell>
+
+                <TableCell align="right">
+                  <IconButton onClick={() => this.handleEditDocumentType(documentType)} edge="end">
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
