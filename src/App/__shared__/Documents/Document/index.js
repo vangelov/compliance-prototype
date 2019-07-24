@@ -54,6 +54,11 @@ class Document extends React.Component {
       specialtiesMap[specialty.id] = specialty;
     }
 
+    const statusColor = {
+      'approved': 'primary',
+      'declined': 'secondary'
+    };
+
     return (
       <ExpansionPanel expanded={expanded} onChange={this.handleExpandChange}>
         <ExpansionPanelSummary
@@ -67,6 +72,18 @@ class Document extends React.Component {
             label={documentType.level.toUpperCase()}
             className={classes.chip}
           />
+
+          <div style={{marginRight: 0, marginLeft: 'auto'}}>
+            {document.stamps.map((stamp) => {
+                const specialty = specialtiesMap[stamp.specialtyId];
+                return <Chip
+                  size="small"
+                  label={specialty.name}
+                  color={statusColor[stamp.status]}
+                  style={{marginRight: "5px"}}
+                />})}
+           </div>
+          
         </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <div style={{width: '100%'}}>
