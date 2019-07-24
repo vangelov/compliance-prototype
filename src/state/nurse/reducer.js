@@ -1,16 +1,26 @@
-// import * as actions from "./actions";
+import * as actions from "./actions";
 
 const initialState = {
-  job: {
-    baseDocumentTypesIds: [0, 1, 2],
-    specialtiesIds: []
-  }
+  appliedSpecialtiesIds: [0]
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
+      case actions.NURSE_ADD_SPECIALTY:
+        return {
+          ...state,
+          appliedSpecialtiesIds: [...state.appliedSpecialtiesIds, action.specialtyId]
+        };
+      
+      case actions.NURSE_REMOVE_SPECIALTY:
+        return {
+          ...state,
+          appliedSpecialtiesIds: state.appliedSpecialtiesIds.filter(
+            (specialtyId) => specialtyId !== action.specialtyId
+          )
+        };
 
-        default:
-            return state;
+      default:
+          return state;
     }
 };

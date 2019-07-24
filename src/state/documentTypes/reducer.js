@@ -11,7 +11,7 @@ export default (state = initialState, action) => {
         case actions.DOCUMENT_TYPES_ADD:
           return [
             ...state,
-            { id: state.length + 1, ...action.documentType }
+            { id: state.length, ...action.documentType }
           ];
 
         case actions.DOCUMENT_TYPES_EDIT: {

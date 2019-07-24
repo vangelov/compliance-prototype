@@ -2,55 +2,50 @@ import React from 'react';
 import { connect } from "react-redux";
 
 import Document from './Document';
-import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Chip from '@material-ui/core/Chip';
+
+import DocumentSpecialties from './Specialties';
+import ComplianceGroup from './ComplianceGroup';
 
 class Documents extends React.Component {
 
   render() {
-    const { documents, documentTypes, isForAdmin, compliance } = this.props;
+    const { documents, documentTypes, isForAdmin, compliance, specialties } = this.props;
     const documentTypesMap = {};
 
     for (const documentType of documentTypes) {
       documentTypesMap[documentType.id] = documentType;
     }
 
-    const statusColor = {
-      'approved': 'primary',
-      'declined': 'secondary'
-    };
+    const specialtiesMap = {};
+    for (const specialty of specialties) {
+      specialtiesMap[specialty.id] = specialty;
+    }
+
+    const specialtiesGroupedPerStatus = {};
+
+    for (const complianceItem of compliance) {
+      if (!specialtiesGroupedPerStatus[complianceItem.status]) {
+        specialtiesGroupedPerStatus[complianceItem.status] = [];
+      }
+
+      const specialty = specialtiesMap[complianceItem.specialtyId];
+      specialtiesGroupedPerStatus[complianceItem.status].push(specialty);
+    }
 
     return (
       <div>
-        <AppBar position="static" color="default" style={{ marginTop: "20px", marginBottom: "20px"}}>
-        <Toolbar>
-          <Typography variant="h6" color="inherit">
-            General Band 5, A&E
-          </Typography>
+        {!isForAdmin && <DocumentSpecialties />}
 
-          <Chip
-            style={{marginRight: "0px", marginLeft: "auto"}}
-            label="APPROVED"
-            color={statusColor['approved']}
-          />
-        </Toolbar>
-      </AppBar>
-
-      <AppBar position="static" color="default" style={{ marginTop: "20px", marginBottom: "20px"}}>
-        <Toolbar>
-          <Typography variant="h6" color="inherit">
-            RMN
-          </Typography>
-
-          <Chip
-            style={{marginRight: "0px", marginLeft: "auto"}}
-            label="DECLINED"
-            color={statusColor['declined']}
-          />
-        </Toolbar>
-      </AppBar>
+        {Object.keys(specialtiesGroupedPerStatus).map((status) => {
+          return (
+            <ComplianceGroup 
+              key={status} 
+              specialties={specialtiesGroupedPerStatus[status]} 
+              status={status} 
+            />
+          );
+        })}
+        
         {documents.map((document) => {
           const documentType = documentTypesMap[document.documentTypeId];
 
@@ -72,7 +67,8 @@ const mapStateToProps = state => {
   return {
       documentTypes: state.documentTypes,
       documents: state.documents,
-      compliance: state.compliance
+      compliance: state.compliance,
+      specialties: state.specialties
   };
 };
 

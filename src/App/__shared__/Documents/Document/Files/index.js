@@ -95,11 +95,6 @@ class DocumentFiles extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-      specialties: state.specialties
-  };
-};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -114,7 +109,7 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
   ),
   withStyles(styles)

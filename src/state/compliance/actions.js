@@ -1,6 +1,7 @@
 export const COMPLIANCE_UPDATE = 'COMPLIANCE_UPDATE';
-export const complianceUpdate = (documents, documentTypes) => ({ 
+export const complianceUpdate = (documents, documentTypes, specialties) => ({ 
   type: COMPLIANCE_UPDATE,
   documents,
-  documentTypes
+  documentTypes,
+  specialties
 });

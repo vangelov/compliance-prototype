@@ -9,7 +9,7 @@ export default (state = initialState, action) => {
         case actions.SPECIALTIES_ADD:
           return [
             ...state,
-            { id: state.length + 1, ...action.specialty }
+            { id: state.length, ...action.specialty }
           ];
 
         case actions.SPECIALTIES_EDIT: {

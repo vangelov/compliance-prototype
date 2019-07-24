@@ -108,61 +108,68 @@ export default (state = initialState, action) => {
 
       const updatedDocuments = documentsUtil.update(specialties, state);
 
-      return updatedDocuments
-        .map((document) => {
-          if (['approved', 'expiring_soon', 'expired'].indexOf(document.status) === -1) {
-            return document;
+      return updatedDocuments.map((document) => {
+        const documentType = documentTypeForId[document.documentTypeId];
+        if (documentType.level !== 'required') {
+          return document;
+        }
+
+        const updatedStamps = document.stamps.map((stamp) => {
+          if (['approved', 'expiring_soon', 'expired'].indexOf(stamp.status) === -1) {
+            return stamp;
+          }
+          if (!stamp.expiresAt) {
+            return stamp;
           }
 
-          const documentType = documentTypeForId[document.documentTypeId];
-          if (documentType.level !== 'required') {
-            return document;
-          }
-
-          const daysUntilExpiration = distanceInDaysFromNow(document.expiresAt);
-          let updatedDocument = document;
- 
-          if (document.status === 'approved') {
+          const daysUntilExpiration = distanceInDaysFromNow(stamp.expiresAt);
+          if (stamp.status === 'approved') {
             if (daysUntilExpiration <= 0) {
-              updatedDocument = {
-                ...document,
+              return {
+                ...stamp,
                 status: 'expired'
               };
             } else if (daysUntilExpiration > 0 && daysUntilExpiration <= 2) {
-              updatedDocument = {
-                ...document,
+              return {
+                ...stamp,
                 status: 'expiring_soon'
               };
             }  
-          } else if (document.status === 'expiring_soon') {
+          } else if (stamp.status === 'expiring_soon') {
             if (daysUntilExpiration <= 0) {
-              updatedDocument = {
-                ...document,
+              return {
+                ...stamp,
                 status: 'expired'
               };
             } else if (daysUntilExpiration > 2) {
-              updatedDocument = {
-                ...document,
+              return {
+                ...stamp,
                 status: 'approved'
               };
             }  
           } else if (document.status === 'expired') {
             if (daysUntilExpiration > 0 && daysUntilExpiration <= 2) {
-              updatedDocument = {
-                ...document,
+              return {
+                ...stamp,
                 status: 'expiring_soon'
               };
             } else if (daysUntilExpiration) {
-              updatedDocument = {
-                ...document,
+              return {
+                ...stamp,
                 status: 'approved'
               };
             }
           }
 
-          return updatedDocument;
+          return stamp;
         });
-      }
+
+        return {
+          ...document,
+          stamps: updatedStamps
+        };
+      });
+    }
       
     default:
       return state;

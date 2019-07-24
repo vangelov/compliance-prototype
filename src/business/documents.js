@@ -64,7 +64,7 @@ export function update(specialties, currentDocuments) {
         expiresAt: '',
         specialtyId: specialty.id
       }));
-      
+
       documents.push({
         id: currentDocuments.length + newDocumentsCount,
         status: 'not_uploaded',

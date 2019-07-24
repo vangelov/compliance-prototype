@@ -36,14 +36,24 @@ class App extends React.Component {
       const { 
         specialties, 
         documentTypes, 
-        documents,
         onDocumentsTimePass,
-        onComplianceUpdate
+        onComplianceUpdate,
+        nurse
       } = this.props;
 
-      onDocumentsTimePass(specialties, documentTypes);
-      onComplianceUpdate(documents, documentTypes);
+      const specialtiesMap = {};
+      for (const specialty of specialties) {
+        specialtiesMap[specialty.id] = specialty;
+      }
 
+      const appliedSpecialties = nurse.appliedSpecialtiesIds.map((specialtyId) => specialtiesMap[specialtyId]);
+
+      onDocumentsTimePass(appliedSpecialties, documentTypes);
+
+      setTimeout(() => {
+        const { documents } = this.props;
+        onComplianceUpdate(documents, documentTypes, appliedSpecialties);
+      }, 0);
     }, 1000);
   }
 
@@ -87,12 +97,8 @@ const mapDispatchToProps = (dispatch) => {
     onDocumentsTimePass: (nurse, documentTypes) => {
       dispatch(actions.documentsTimePass(nurse, documentTypes));
     },
-    onComplianceUpdate: (documents, documentTypes) => {
-      dispatch(actions.complianceUpdate(documents, documentTypes));
-    },
-
-    test: () => {
-      dispatch(actions.documentsAddFile(0, { name: 'test file' }));
+    onComplianceUpdate: (documents, documentTypes, specialties) => {
+      dispatch(actions.complianceUpdate(documents, documentTypes, specialties));
     }
   };
 };

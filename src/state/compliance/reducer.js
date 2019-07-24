@@ -1,5 +1,4 @@
 import * as actions from "./actions";
-import { distanceInDaysFromNow } from '../__shared__/dateUtil';
 
 const initialState = [
   { specialtyId: 0, status: 'pending' }
@@ -8,69 +7,90 @@ const initialState = [
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.COMPLIANCE_UPDATE: {
-      const { documents, documentTypes } = action;
-      const documentTypeForId = {};
+      const { documents, documentTypes, specialties } = action;
 
       if (documents.length === 0 || documentTypes.legnth === 0) {
         return state;
       }
 
+      const documentTypeForId = {};
+
       for (const documentType of documentTypes) {
         documentTypeForId[documentType.id] = documentType;
       }
 
-      let declinedCount = 0;
-      let approvedCount = 0;
+      const compliances = [];
 
-      for (const document of documents) {
-        if (document.level === 'optional' || document.level === 'n/a') {
-          continue;
-        }
-      
-        const documentType = documentTypeForId[document.documentTypeId];
-        if (distanceInDaysFromNow(documentType.effectiveFrom) !== 0) {
-          continue;
-        }
+      for (const specialty of specialties) {
+        const stampsForSpecialty = [];
 
-        if (state.status === 'approved' && document.status === 'expiring_soon') {
-          return {
-            status: 'expiring_soon'
-          };
-        }
+        for (const document of documents) {
+          const documentType = documentTypeForId[document.documentTypeId];
+          if (documentType.level === 'optional' || documentType.level === 'n/a') {
+            continue;
+          }
+          if (new Date(documentType.effectiveFrom).getTime() > new Date().getTime()) {
+            continue;
+          }
 
-        if ((state.status === 'approved' || state.status === 'expiring_soon') && document.status === 'expired') {
-          return {
-            status: 'expired'
-          };
+          for (const stamp of document.stamps) {
+            if (stamp.specialtyId === specialty.id) {
+              stampsForSpecialty.push(stamp);
+            }
+          }
         }
 
-        if (document.status === 'approved') {
-          approvedCount += 1;
+        if (stampsForSpecialty.length === 0) {
+          console.log('sp', documents, specialties);
         }
 
-        if (document.status === 'declined') {
-          declinedCount += 1;
-        }
+        const status = complianceStatusForStamps(stampsForSpecialty);
+
+        compliances.push({
+          specialtyId: specialty.id,
+          status
+        });
       }
 
-      if (declinedCount === documents.length) {
-        return {
-          status: 'declined'
-        }
-      }
-
-      if (approvedCount === documents.length) {
-        return {
-          status: 'approved'
-        }
-      }
-
-      return {
-        status: 'pending'
-      };
+      return compliances;
     }
 
     default:
       return state;
   }
 };
+
+function complianceStatusForStamps(stamps) {
+  let declinedCount = 0;
+  let approvedCount = 0;
+
+
+  for (const stamp of stamps) {
+    if (stamp.status === 'expiring_soon') {
+      return 'expiring_soon'
+    }
+
+    if (stamp.status === 'expired') {
+      return 'expired';
+    }
+
+    if (stamp.status === 'approved') {
+      approvedCount += 1;
+    }
+
+    if (stamp.status === 'declined') {
+      declinedCount += 1;
+    }
+  }
+
+  if (declinedCount === stamps.length) {
+    console.log('here', declinedCount, stamps.length);
+    return 'declined';
+  }
+
+  if (approvedCount === stamps.length) {
+    return 'approved';
+  }
+
+  return 'pending';
+}

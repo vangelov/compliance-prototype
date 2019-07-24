@@ -45,32 +45,31 @@ class Stamp extends React.Component {
         </div>
 
         {canEdit && 
-            <React.Fragment>
-            <TextField
-              style={{marginTop:"20px"}}
-              required
-              onChange={this.handleExpiresAtChange}
-              value={stamp.expiresAt}
-              margin="dense"
-              label="Expires At"
-              type="date"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />      
+          <React.Fragment>
+          <TextField
+            style={{marginTop:"20px"}}
+            required
+            onChange={this.handleExpiresAtChange}
+            value={stamp.expiresAt}
+            margin="dense"
+            label="Expires At"
+            type="date"
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />      
 
-            <InputLabel  style={{marginTop:"20px"}}>Status</InputLabel>
-            <Select 
-              disabled={!stamp.expiresAt}
-              fullWidth
-              value={stamp.status}
-              onChange={this.handleStatusChange}
-            >
-              <MenuItem value={'approved'}>Approved</MenuItem>
-              <MenuItem value={'declined'}>Declined</MenuItem>
-            </Select> 
-          </React.Fragment>}
+          <InputLabel  style={{marginTop:"20px"}}>Status</InputLabel>
+          <Select 
+            fullWidth
+            value={stamp.status}
+            onChange={this.handleStatusChange}
+          >
+            <MenuItem value={'approved'}>Approved</MenuItem>
+            <MenuItem value={'declined'}>Declined</MenuItem>
+          </Select> 
+        </React.Fragment>}
       </div> 
     );
   }
