@@ -1,6 +1,4 @@
-# Products Task
-
-A simple CRUD application for books.
+# Compliance Prototype
 
 ## How to run it
 
