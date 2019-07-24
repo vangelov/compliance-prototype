@@ -27,6 +27,7 @@ class DocumentsSpecialties extends React.Component {
               key={specialty.id}
               control={
                 <Checkbox  
+                  disabled={specialty.id === 0}
                   color="primary" 
                   onChange={(event) => this.handleCheckboxChange(specialty, event.target.checked)}
                   checked={nurse.appliedSpecialtiesIds.indexOf(specialty.id) >= 0} 
