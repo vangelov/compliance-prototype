@@ -1,7 +1,7 @@
 import * as actions from "./actions";
 
 const initialState = {
-  appliedSpecialtiesIds: [0]
+  appliedSpecialtiesIds: []
 };
 
 export default (state = initialState, action) => {
@@ -10,6 +10,11 @@ export default (state = initialState, action) => {
         return {
           ...state,
           appliedSpecialtiesIds: [...state.appliedSpecialtiesIds, action.specialtyId]
+        };
+
+      case actions.NURSE_SET_ROOT_SPECIALTY:
+        return {
+          appliedSpecialtiesIds: [action.specialtyId]
         };
       
       case actions.NURSE_REMOVE_SPECIALTY:

@@ -30,7 +30,7 @@ class AdminPart extends React.Component {
         <AppBar position="static">
           <Tabs value={tabIndex} onChange={this.handleTabIndexChange} centered>
             <Tab label="DOCUMENT TYPES" />
-            <Tab label="SPECIALTIES" />
+            <Tab label="JOBS" />
             <Tab label="NURSE DOCUMENTS" />
           </Tabs>
         </AppBar>

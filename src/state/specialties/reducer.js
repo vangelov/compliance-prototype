@@ -1,7 +1,15 @@
 import * as actions from "./actions";
 
 const initialState = [
-  { id: 0, name: "General Band5", documentTypeIds: [0, 1, 2] }
+  { id: 0, name: "Band5 Nurse", documentTypeIds: [0, 1, 2], parentId: null },
+  { id: 2, name: "RMN Nurse", documentTypeIds: [0, 1], parentId: 0 },
+
+  { id: 1, name: "Clinician", documentTypeIds: [3, 4], parentId: null },
+
+  { id: 3, name: "Hygienist", documentTypeIds: [4], parentId: 1 },
+
+
+
 ]
 
 export default (state = initialState, action) => {

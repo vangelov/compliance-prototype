@@ -59,6 +59,22 @@ class AdminSpecialties extends React.Component {
   render() {
     const { classes, specialties } = this.props;
     const { specialtyCreateOrEditDialogOpened, specialtyForEditing } = this.state;
+    const specialtyForId = {};
+
+    for (const specialty of specialties) {
+      specialtyForId[specialty.id] = specialty;
+    }
+
+    const specialtiesWithoutParents = specialties.filter((specialty) => specialty.parentId === null);
+
+    const orderedSpecialties = [];
+
+    for (const rootSpecialty of specialtiesWithoutParents) {
+      orderedSpecialties.push(rootSpecialty);
+      const children = specialties.filter((specialty) => specialty.parentId === rootSpecialty.id);
+
+      orderedSpecialties.push(...children);
+    }
 
     return (
       <Paper className={classes.root}>
@@ -80,20 +96,24 @@ class AdminSpecialties extends React.Component {
           </TableHead>
           
           <TableBody>
-            {specialties.map(specialty => (
-              <TableRow key={specialty.name}>
-                <TableCell component="th" scope="row">
-                  {specialty.name}
-                </TableCell>
-                <TableCell align="right">{specialty.documentTypeIds.length}</TableCell>
+            {orderedSpecialties.map(specialty => {
+              const parentSpecialty = specialtyForId[specialty.parentId];
 
-                <TableCell align="right">
-                  <IconButton onClick={() => this.handleEditSpecialty(specialty)} edge="end">
-                    <EditIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+              return (
+                <TableRow key={specialty.name}>
+                  <TableCell component="th" scope="row">
+                    {parentSpecialty ? '>> ' : ''}{specialty.name}
+                  </TableCell>
+                  <TableCell align="right">{specialty.documentTypeIds.length}</TableCell>
+
+                  <TableCell align="right">
+                    <IconButton onClick={() => this.handleEditSpecialty(specialty)} edge="end">
+                      <EditIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </Paper>

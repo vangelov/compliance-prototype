@@ -1,11 +1,14 @@
-import * as actions from "./actions";
+import * as actions from "../actions";
 
 const initialState = [
-  { specialtyId: 0, status: 'pending' }
+ 
 ];
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case actions.NURSE_SET_ROOT_SPECIALTY: 
+      return [{ specialtyId: action.specialtyId, status: 'pending' }];
+
     case actions.COMPLIANCE_UPDATE: {
       const { documents, documentTypes, specialties } = action;
 
@@ -38,10 +41,6 @@ export default (state = initialState, action) => {
               stampsForSpecialty.push(stamp);
             }
           }
-        }
-
-        if (stampsForSpecialty.length === 0) {
-          console.log('sp', documents, specialties);
         }
 
         const status = complianceStatusForStamps(stampsForSpecialty);

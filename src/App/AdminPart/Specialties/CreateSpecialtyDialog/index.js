@@ -14,6 +14,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
+import MenuItem from "@material-ui/core/MenuItem";
+import Typography from '@material-ui/core/Typography';
 
 import * as actions from "../../../../state/actions";
 
@@ -42,6 +44,7 @@ export class AdminCreateSpecialtyDialog extends React.Component {
         this.state = {
           opened: true,
           name: specialty ? specialty.name : "",
+          parentSpecialtyId: specialty ? specialty.parentId : null,
           selectedDocumentTypeIds
         };
     }
@@ -53,7 +56,7 @@ export class AdminCreateSpecialtyDialog extends React.Component {
     };
 
     create = () => {
-      const { name, selectedDocumentTypeIds } = this.state;
+      const { name, selectedDocumentTypeIds, parentSpecialtyId } = this.state;
       const { specialty } = this.props;
 
       const ids = Object
@@ -65,14 +68,16 @@ export class AdminCreateSpecialtyDialog extends React.Component {
         const editedSpecialty = {
           id: specialty.id,
           name,
-          documentTypeIds: ids
+          documentTypeIds: ids,
+          parentId: parentSpecialtyId
         };
 
         this.props.onEdit(editedSpecialty);
       } else {
         const newSpecialty = {
           name,
-          documentTypeIds: ids
+          documentTypeIds: ids,
+          parentId: parentSpecialtyId
         };
 
         this.props.onCreate(newSpecialty);
@@ -105,14 +110,18 @@ export class AdminCreateSpecialtyDialog extends React.Component {
         const {
           classes,
           documentTypes,
+          specialties,
           specialty
         } = this.props;
 
         const {
           opened,
           name,
-          selectedDocumentTypeIds
+          selectedDocumentTypeIds,
+          parentSpecialtyId
         } = this.state;
+
+        const specialtiesWithoutParents = specialties.filter((specialty) => specialty.parentId === null);
 
         return (
             <Dialog open={opened} onExited={this.close}>
@@ -131,6 +140,23 @@ export class AdminCreateSpecialtyDialog extends React.Component {
                   type="string"
                   fullWidth
                 />
+
+              <TextField
+                  value={parentSpecialtyId}
+                  select
+                  onChange={this.handleTextFieldChange("parentSpecialtyId")}
+                  fullWidth
+                  label="Speciality for"
+                  margin="dense"
+                >
+                  {specialtiesWithoutParents.map((specialty) => (
+                      <MenuItem key={specialty.id} value={specialty.id}>
+                          {specialty.name}
+                      </MenuItem>
+                  ))}
+                </TextField>
+
+                <Typography style={{marginTop: '20px'}}>Documents</Typography>
 
                 <List className={classes.list}>
                   {documentTypes.map(documentType => {
@@ -172,7 +198,8 @@ export class AdminCreateSpecialtyDialog extends React.Component {
 
 const mapStateToProps = state => {
   return {
-      documentTypes: state.documentTypes
+      documentTypes: state.documentTypes,
+      specialties: state.specialties
   };
 };
 
